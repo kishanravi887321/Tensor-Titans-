@@ -4,11 +4,12 @@ import type React from "react"
 
 import { useSession } from "next-auth/react"
 import { useRouter } from "next/navigation"
-import { useEffect } from "react"
+import { useEffect, useState } from "react"
 import { SidebarNav } from "@/components/sidebar-nav"
 import { UserMenu } from "@/components/user-menu"
 import { RoleSwitcher } from "@/components/role-switcher"
-import { CoachPanel } from "@/components/coach-panel"
+import { AIAvatar } from "@/components/ai-avatar"
+import { AIChatbot } from "@/components/ai-chatbot"
 import { Button } from "@/components/ui/button"
 import { Search, Menu } from "lucide-react"
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet"
@@ -21,6 +22,7 @@ export default function AppLayout({
 }) {
   const { data: session, status } = useSession()
   const router = useRouter()
+  const [isChatOpen, setIsChatOpen] = useState(false)
 
   useEffect(() => {
     if (status === "loading") return
@@ -91,24 +93,22 @@ export default function AppLayout({
         </header>
 
         {/* Page Content */}
-        <div className="flex">
-          <main className="flex-1 p-4 sm:p-6">{children}</main>
-
-          {/* Desktop Coach Panel */}
-          <div className="hidden lg:block">
-            <Suspense fallback={<div>Loading...</div>}>
-              <CoachPanel />
-            </Suspense>
-          </div>
-        </div>
+        <main className="p-4 sm:p-6">{children}</main>
       </div>
 
-      {/* Mobile Coach Panel */}
-      <div className="lg:hidden">
-        <Suspense fallback={<div>Loading...</div>}>
-          <CoachPanel />
-        </Suspense>
-      </div>
+      {/* AI Avatar */}
+      <Suspense fallback={<div>Loading...</div>}>
+        <AIAvatar 
+          onToggleChat={() => setIsChatOpen(!isChatOpen)} 
+          isOpen={isChatOpen}
+          hasNewMessage={false}
+        />
+      </Suspense>
+
+      {/* AI Chatbot */}
+      <Suspense fallback={<div>Loading...</div>}>
+        <AIChatbot isOpen={isChatOpen} />
+      </Suspense>
     </div>
   )
 }

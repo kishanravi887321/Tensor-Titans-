@@ -5,7 +5,7 @@ import { usePathname } from "next/navigation"
 import { cn } from "@/lib/utils"
 import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
-import { LayoutDashboard, Users, BookOpen, FolderOpen, TrendingUp, Settings, Sparkles } from "lucide-react"
+import { LayoutDashboard, Users, BookOpen, FolderOpen, TrendingUp, Settings, Sparkles, Map } from "lucide-react"
 
 const navigation = [
   {
@@ -22,6 +22,12 @@ const navigation = [
     name: "Learn",
     href: "/learn",
     icon: BookOpen,
+  },
+  {
+    name: "Roadmap",
+    href: "/roadmap",
+    icon: Map,
+    badge: "AI",
   },
   {
     name: "Projects",
