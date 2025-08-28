@@ -1,12 +1,12 @@
 "use client"
 
 import { useState, useEffect } from "react"
+import { useRouter } from "next/navigation"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
 import { Progress } from "@/components/ui/progress"
 import { Separator } from "@/components/ui/separator"
-import { PhaseFlowchart } from "@/components/phase-flowchart"
 import { useAppStore } from "@/lib/store"
 import { ROLES, MOCK_LESSONS } from "@/lib/mock-data"
 import { 
@@ -28,7 +28,8 @@ import {
   ChevronRight,
   Lock,
   Sparkles,
-  GitBranch
+  GitBranch,
+  ExternalLink
 } from "lucide-react"
 import { cn } from "@/lib/utils"
 
@@ -54,8 +55,7 @@ interface RoadmapPhase {
 export default function RoadmapPage() {
   const { currentRole, progress } = useAppStore()
   const [selectedPhase, setSelectedPhase] = useState<string | null>(null)
-  const [showFlowchart, setShowFlowchart] = useState(false)
-  const [flowchartPhase, setFlowchartPhase] = useState<RoadmapPhase | null>(null)
+  const router = useRouter()
   
   const currentRoleData = ROLES.find(r => r.id === currentRole)
 
@@ -207,8 +207,9 @@ export default function RoadmapPage() {
   const overallProgress = ((completedPhases + (currentPhase?.progress || 0) / 100) / totalPhases) * 100
 
   const handlePhaseClick = (phase: RoadmapPhase) => {
-    setFlowchartPhase(phase)
-    setShowFlowchart(true)
+    if (phase.status !== 'locked') {
+      router.push(`/flowchart/${phase.id}`)
+    }
   }
 
   const getDifficultyColor = (difficulty: string) => {
@@ -527,15 +528,6 @@ export default function RoadmapPage() {
             </div>
           </CardContent>
         </Card>
-
-        {/* Flowchart Dialog */}
-        {flowchartPhase && (
-          <PhaseFlowchart
-            phase={flowchartPhase}
-            isOpen={showFlowchart}
-            onClose={() => setShowFlowchart(false)}
-          />
-        )}
       </div>
     </div>
   )
